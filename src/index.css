@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@theme {
+  --color-madera-50: #fdf8f0;
+  --color-madera-100: #f5e6d3;
+  --color-madera-200: #e8cca7;
+  --color-madera-300: #d4a574;
+  --color-madera-400: #c0844a;
+  --color-madera-500: #a66a2e;
+  --color-madera-600: #8b5224;
+  --color-madera-700: #6b3e1c;
+  --color-madera-800: #4a2c13;
+  --color-madera-900: #2d1a0b;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+.dark {
+  color-scheme: dark;
+}
