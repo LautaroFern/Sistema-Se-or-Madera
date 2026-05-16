@@ -54,22 +54,39 @@ export function FacturacionPage() {
     if (!form.id_cliente) {
       newErrors.id_cliente = 'Seleccione un cliente'
     }
+
     if (!form.nombre_operacion.trim()) {
       newErrors.nombre_operacion = 'El nombre es requerido'
+    } else if (form.nombre_operacion.trim().length < 3) {
+      newErrors.nombre_operacion = 'El nombre debe tener al menos 3 caracteres'
+    } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(form.nombre_operacion.trim())) {
+      newErrors.nombre_operacion = 'El nombre solo debe contener letras y espacios'
     }
+
     if (!form.descripcion.trim()) {
       newErrors.descripcion = 'La descripción es requerida'
+    } else if (form.descripcion.trim().length < 10) {
+      newErrors.descripcion = 'La descripción debe tener al menos 10 caracteres'
     }
-    if (form.duracion <= 0) {
+
+    if (!form.duracion || form.duracion <= 0) {
       newErrors.duracion = 'La duración debe ser mayor a 0'
+    } else if (form.duracion > 9999) {
+      newErrors.duracion = 'La duración máxima es 9999 horas'
     }
+
     if (form.productos.length === 0) {
       newErrors.productos = 'Agregue al menos un producto'
     }
 
-    const productosInvalidos = form.productos.filter((p) => p.cantidad <= 0)
+    const productosInvalidos = form.productos.filter((p) => p.cantidad < 1)
     if (productosInvalidos.length > 0) {
-      newErrors.productos_cantidad = 'Todas las cantidades deben ser mayores a 0'
+      newErrors.productos_cantidad = 'Todas las cantidades deben ser al menos 1'
+    }
+
+    const productosSinSeleccionar = form.productos.filter((p) => p.id_producto === 0)
+    if (productosSinSeleccionar.length > 0) {
+      newErrors.productos_seleccion = 'Debe seleccionar un producto para cada fila'
     }
 
     setErrors(newErrors)
@@ -175,8 +192,8 @@ export function FacturacionPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-black dark:text-madera-50 flex items-center gap-2">
-        <FileText className="w-6 h-6 text-black dark:text-madera-300" />
+      <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+        <FileText className="w-6 h-6 text-black" />
         Nueva Facturación
       </h1>
 
@@ -266,6 +283,9 @@ export function FacturacionPage() {
           )}
           {errors.productos_cantidad && (
             <p className="text-sm text-red-500">{errors.productos_cantidad}</p>
+          )}
+          {errors.productos_seleccion && (
+            <p className="text-sm text-red-500">{errors.productos_seleccion}</p>
           )}
 
           {form.productos.length === 0 ? (

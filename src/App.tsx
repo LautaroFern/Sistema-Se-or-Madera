@@ -5,6 +5,7 @@ import { AuthProvider } from './features/auth/AuthContext'
 import { ProtectedRoute } from './features/auth/ProtectedRoute'
 import { Layout } from './components/layout'
 import { LoginPage } from './features/auth/LoginPage'
+import { PerfilPage } from './features/auth/PerfilPage'
 import { DashboardPage } from './features/dashboard/DashboardPage'
 import { FacturacionPage } from './features/facturacion/FacturacionPage'
 import { OperacionesPage } from './features/operaciones/OperacionesPage'
@@ -34,6 +35,7 @@ function App() {
               <Route path="operaciones" element={<OperacionesPage />} />
               <Route path="clientes" element={<ClientesPage />} />
               <Route path="productos" element={<ProductosPage />} />
+              <Route path="perfil" element={<PerfilPage />} />
               <Route
                 path="auditoria"
                 element={

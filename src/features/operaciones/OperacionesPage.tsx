@@ -207,8 +207,8 @@ export function OperacionesPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-black dark:text-madera-50 flex items-center gap-2">
-        <ClipboardList className="w-6 h-6 text-black dark:text-madera-300" />
+      <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+        <ClipboardList className="w-6 h-6 text-black" />
         Operaciones
       </h1>
 

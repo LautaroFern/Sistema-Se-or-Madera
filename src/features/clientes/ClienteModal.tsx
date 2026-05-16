@@ -49,23 +49,44 @@ export function ClienteModal({ isOpen, onClose, onSave, cliente }: ClienteModalP
 
     if (!form.nombre.trim()) {
       newErrors.nombre = 'El nombre es requerido'
+    } else if (form.nombre.trim().length < 2) {
+      newErrors.nombre = 'El nombre debe tener al menos 2 caracteres'
+    } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(form.nombre.trim())) {
+      newErrors.nombre = 'El nombre solo debe contener letras y espacios'
     }
+
     if (!form.dni.trim()) {
       newErrors.dni = 'El DNI es requerido'
+    } else if (!/^\d+$/.test(form.dni.trim())) {
+      newErrors.dni = 'El DNI solo debe contener números'
+    } else if (form.dni.trim().length !== 8) {
+      newErrors.dni = 'El DNI debe tener 8 dígitos'
     }
+
     if (!form.cuit_rut.trim()) {
       newErrors.cuit_rut = 'El CUIT/RUT es requerido'
+    } else if (!/^\d{2}-\d{8}-\d$/.test(form.cuit_rut.trim())) {
+      newErrors.cuit_rut = 'Formato válido: XX-XXXXXXXX-X'
     }
+
     if (!form.mail.trim()) {
       newErrors.mail = 'El email es requerido'
-    } else if (!/\S+@\S+\.\S+/.test(form.mail)) {
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.mail.trim())) {
       newErrors.mail = 'El email no es válido'
     }
+
     if (!form.telefono.trim()) {
       newErrors.telefono = 'El teléfono es requerido'
+    } else if (!/^\d+$/.test(form.telefono.trim())) {
+      newErrors.telefono = 'El teléfono solo debe contener números'
+    } else if (form.telefono.trim().length !== 10) {
+      newErrors.telefono = 'El teléfono debe tener 10 dígitos'
     }
+
     if (!form.direccion.trim()) {
       newErrors.direccion = 'La dirección es requerida'
+    } else if (form.direccion.trim().length < 5) {
+      newErrors.direccion = 'La dirección debe tener al menos 5 caracteres'
     }
 
     setErrors(newErrors)

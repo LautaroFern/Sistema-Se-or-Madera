@@ -164,8 +164,8 @@ export function ProductosPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-black dark:text-madera-50 flex items-center gap-2">
-          <Package className="w-6 h-6 text-black dark:text-madera-300" />
+        <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+          <Package className="w-6 h-6 text-black" />
           Productos
         </h1>
 

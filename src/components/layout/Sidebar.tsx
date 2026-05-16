@@ -10,6 +10,7 @@ import {
   LogOut,
   X,
   User,
+  Eye,
 } from 'lucide-react'
 import { useAuth } from '../../features/auth/AuthContext'
 import { Button } from '../ui'
@@ -87,6 +88,14 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                     <p className="text-sm text-madera-600 dark:text-madera-400 capitalize">{user.rol}</p>
                   </div>
                 </div>
+                <NavLink
+                  to="/perfil"
+                  onClick={onClose}
+                  className="mt-3 flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-madera-600 dark:text-madera-400 hover:bg-madera-100 dark:hover:bg-madera-800 transition-colors"
+                >
+                  <Eye className="w-4 h-4" />
+                  Ver Perfil
+                </NavLink>
               </div>
             )}
 

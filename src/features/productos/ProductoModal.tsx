@@ -55,27 +55,44 @@ export function ProductoModal({ isOpen, onClose, onSave, producto }: ProductoMod
 
     if (!form.nombre.trim()) {
       newErrors.nombre = 'El nombre es requerido'
+    } else if (form.nombre.trim().length < 2) {
+      newErrors.nombre = 'El nombre debe tener al menos 2 caracteres'
     }
+
     if (!form.descripcion.trim()) {
       newErrors.descripcion = 'La descripción es requerida'
+    } else if (form.descripcion.trim().length < 5) {
+      newErrors.descripcion = 'La descripción debe tener al menos 5 caracteres'
     }
+
     if (!form.categoria.trim()) {
       newErrors.categoria = 'La categoría es requerida'
     }
+
     if (!form.unidad_de_medida.trim()) {
       newErrors.unidad_de_medida = 'La unidad de medida es requerida'
     }
-    if (form.precio_costo <= 0) {
+
+    if (!form.precio_costo || form.precio_costo <= 0) {
       newErrors.precio_costo = 'El precio de costo debe ser mayor a 0'
     }
-    if (form.precio_venta <= 0) {
+
+    if (!form.precio_venta || form.precio_venta <= 0) {
       newErrors.precio_venta = 'El precio de venta debe ser mayor a 0'
+    } else if (form.precio_venta <= form.precio_costo) {
+      newErrors.precio_venta = 'El precio de venta debe ser mayor al precio de costo'
     }
+
     if (form.cantidad < 0) {
       newErrors.cantidad = 'La cantidad no puede ser negativa'
+    } else if (!Number.isInteger(form.cantidad)) {
+      newErrors.cantidad = 'La cantidad debe ser un número entero'
     }
-    if (form.cantidad_minima < 0) {
-      newErrors.cantidad_minima = 'La cantidad mínima no puede ser negativa'
+
+    if (!form.cantidad_minima || form.cantidad_minima < 1) {
+      newErrors.cantidad_minima = 'La cantidad mínima debe ser al menos 1'
+    } else if (!Number.isInteger(form.cantidad_minima)) {
+      newErrors.cantidad_minima = 'La cantidad mínima debe ser un número entero'
     }
 
     setErrors(newErrors)

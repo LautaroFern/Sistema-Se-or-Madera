@@ -83,7 +83,7 @@ export function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-black dark:text-madera-50">
+      <h1 className="text-2xl font-bold text-white">
         Dashboard
       </h1>
 

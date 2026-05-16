@@ -9,4 +9,16 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     persistSession: true,
     detectSessionInUrl: false,
   },
+  global: {
+    fetch: (...args) => {
+      const [url, options = {}] = args
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 5000)
+
+      return fetch(url as RequestInfo | URL, {
+        ...(options as RequestInit),
+        signal: controller.signal,
+      }).finally(() => clearTimeout(timeoutId))
+    },
+  },
 })
