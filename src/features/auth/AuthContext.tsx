@@ -1,4 +1,6 @@
 import { createContext, useContext, useEffect, useState, useRef, useCallback, ReactNode } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
 import { supabase } from '../../lib/supabaseClient'
 import { AuthUser } from '../../types'
 
@@ -24,6 +26,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null)
   const [loading, setLoading] = useState(true)
   const isMounted = useRef(true)
+  const navigate = useNavigate()
 
   const fetchUserRole = useCallback(async (userId: string): Promise<AuthUser | null> => {
     try {
@@ -63,6 +66,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loadingTimeout = setTimeout(() => {
         if (isMounted.current) {
           setLoading(false)
+          setUser(null)
+          toast.error('Tiempo límite expirado, será redirigido al login de la aplicación')
+          navigate('/login')
         }
       }, 5000)
     }
@@ -137,7 +143,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       subscription.unsubscribe()
     }
-  }, [fetchUserRole])
+  }, [fetchUserRole, navigate])
 
   const login = async (email: string, password: string) => {
     setLoading(true)
