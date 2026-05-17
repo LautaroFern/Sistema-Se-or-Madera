@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
-import { Package, Plus, Pencil, Trash2, AlertTriangle } from 'lucide-react'
+import { Package, Plus, Pencil, Trash2, AlertTriangle, Filter } from 'lucide-react'
 import { toast } from 'sonner'
 import { supabase } from '../../lib/supabaseClient'
 import { useAuth } from '../auth/AuthContext'
@@ -17,6 +17,10 @@ export function ProductosPage() {
   const [modalOpen, setModalOpen] = useState(false)
   const [selectedProducto, setSelectedProducto] = useState<Producto | null>(null)
   const [deleteConfirm, setDeleteConfirm] = useState<Producto | null>(null)
+  const [filtros, setFiltros] = useState({
+    nombre: '',
+    categoria: '',
+  })
 
   const fetchProductos = async () => {
     try {
@@ -38,6 +42,20 @@ export function ProductosPage() {
   useEffect(() => {
     fetchProductos()
   }, [])
+
+  const categorias = [...new Set(productos.map((p) => p.categoria))].sort()
+
+  const productosFiltrados = useMemo(() => {
+    return productos.filter((producto) => {
+      if (filtros.nombre && !producto.nombre.toLowerCase().includes(filtros.nombre.toLowerCase())) {
+        return false
+      }
+      if (filtros.categoria && producto.categoria !== filtros.categoria) {
+        return false
+      }
+      return true
+    })
+  }, [productos, filtros])
 
   const handleSave = async (productoData: Omit<Producto, 'id'>) => {
     try {
@@ -185,13 +203,57 @@ export function ProductosPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white dark:bg-madera-900 rounded-xl border border-madera-200 dark:border-madera-800 shadow-sm p-4"
+        className="bg-white dark:bg-madera-900 rounded-xl border border-madera-200 dark:border-madera-800 shadow-sm"
       >
-        <Table
-          data={productos}
-          columns={columns}
-          searchPlaceholder="Buscar productos..."
-        />
+        <div className="p-4 border-b border-madera-200 dark:border-madera-800">
+          <div className="flex items-center gap-2 mb-4">
+            <Filter className="w-5 h-5 text-madera-500" />
+            <span className="font-medium text-madera-700 dark:text-madera-300">
+              Filtros
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-madera-700 dark:text-madera-300 mb-1">
+                Nombre
+              </label>
+              <input
+                type="text"
+                placeholder="Buscar por nombre..."
+                value={filtros.nombre}
+                onChange={(e) => setFiltros((prev) => ({ ...prev, nombre: e.target.value }))}
+                className="w-full px-3 py-2 border border-madera-300 dark:border-madera-600 rounded-lg bg-white dark:bg-madera-800 text-madera-900 dark:text-madera-100 focus:outline-none focus:ring-2 focus:ring-madera-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-madera-700 dark:text-madera-300 mb-1">
+                Categoría
+              </label>
+              <select
+                value={filtros.categoria}
+                onChange={(e) => setFiltros((prev) => ({ ...prev, categoria: e.target.value }))}
+                className="w-full px-3 py-2 border border-madera-300 dark:border-madera-600 rounded-lg bg-white dark:bg-madera-800 text-madera-900 dark:text-madera-100 focus:outline-none focus:ring-2 focus:ring-madera-500"
+              >
+                <option value="">Todas</option>
+                {categorias.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-4">
+          <Table
+            data={productosFiltrados}
+            columns={columns}
+            searchPlaceholder="Buscar productos..."
+          />
+        </div>
       </motion.div>
 
       <ProductoModal

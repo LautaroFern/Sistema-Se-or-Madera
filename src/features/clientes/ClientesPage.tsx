@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
-import { Users, Plus, Pencil, Trash2 } from 'lucide-react'
+import { Users, Plus, Pencil, Trash2, Filter } from 'lucide-react'
 import { toast } from 'sonner'
 import { supabase } from '../../lib/supabaseClient'
 import { useAuth } from '../auth/AuthContext'
@@ -17,6 +17,10 @@ export function ClientesPage() {
   const [modalOpen, setModalOpen] = useState(false)
   const [selectedCliente, setSelectedCliente] = useState<Cliente | null>(null)
   const [deleteConfirm, setDeleteConfirm] = useState<Cliente | null>(null)
+  const [filtros, setFiltros] = useState({
+    nombre: '',
+    dni: '',
+  })
 
   const fetchClientes = async () => {
     try {
@@ -38,6 +42,18 @@ export function ClientesPage() {
   useEffect(() => {
     fetchClientes()
   }, [])
+
+  const clientesFiltrados = useMemo(() => {
+    return clientes.filter((cliente) => {
+      if (filtros.nombre && !cliente.nombre.toLowerCase().includes(filtros.nombre.toLowerCase())) {
+        return false
+      }
+      if (filtros.dni && !cliente.dni.includes(filtros.dni)) {
+        return false
+      }
+      return true
+    })
+  }, [clientes, filtros])
 
   const handleSave = async (clienteData: Omit<Cliente, 'id'>) => {
     try {
@@ -90,6 +106,7 @@ export function ClientesPage() {
     { key: 'mail', header: 'Email', searchKey: true },
     { key: 'telefono', header: 'Teléfono' },
     { key: 'direccion', header: 'Dirección' },
+    { key: 'numero', header: 'Número' },
   ]
 
   if (isAdmin) {
@@ -150,13 +167,52 @@ export function ClientesPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white dark:bg-madera-900 rounded-xl border border-madera-200 dark:border-madera-800 shadow-sm p-4"
+        className="bg-white dark:bg-madera-900 rounded-xl border border-madera-200 dark:border-madera-800 shadow-sm"
       >
-        <Table
-          data={clientes}
-          columns={columns}
-          searchPlaceholder="Buscar clientes..."
-        />
+        <div className="p-4 border-b border-madera-200 dark:border-madera-800">
+          <div className="flex items-center gap-2 mb-4">
+            <Filter className="w-5 h-5 text-madera-500" />
+            <span className="font-medium text-madera-700 dark:text-madera-300">
+              Filtros
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-madera-700 dark:text-madera-300 mb-1">
+                Nombre
+              </label>
+              <input
+                type="text"
+                placeholder="Buscar por nombre..."
+                value={filtros.nombre}
+                onChange={(e) => setFiltros((prev) => ({ ...prev, nombre: e.target.value }))}
+                className="w-full px-3 py-2 border border-madera-300 dark:border-madera-600 rounded-lg bg-white dark:bg-madera-800 text-madera-900 dark:text-madera-100 focus:outline-none focus:ring-2 focus:ring-madera-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-madera-700 dark:text-madera-300 mb-1">
+                DNI
+              </label>
+              <input
+                type="text"
+                placeholder="Buscar por DNI..."
+                value={filtros.dni}
+                onChange={(e) => setFiltros((prev) => ({ ...prev, dni: e.target.value }))}
+                className="w-full px-3 py-2 border border-madera-300 dark:border-madera-600 rounded-lg bg-white dark:bg-madera-800 text-madera-900 dark:text-madera-100 focus:outline-none focus:ring-2 focus:ring-madera-500"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="p-4">
+          <Table
+            data={clientesFiltrados}
+            columns={columns}
+            searchPlaceholder="Buscar clientes..."
+          />
+        </div>
       </motion.div>
 
       <ClienteModal

@@ -19,6 +19,7 @@ export interface Cliente {
   mail: string
   telefono: string
   direccion: string
+  numero: string
 }
 
 export interface Producto {

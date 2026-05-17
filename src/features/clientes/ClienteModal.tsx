@@ -17,6 +17,7 @@ export function ClienteModal({ isOpen, onClose, onSave, cliente }: ClienteModalP
     mail: '',
     telefono: '',
     direccion: '',
+    numero: '',
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(false)
@@ -30,6 +31,7 @@ export function ClienteModal({ isOpen, onClose, onSave, cliente }: ClienteModalP
         mail: cliente.mail,
         telefono: cliente.telefono,
         direccion: cliente.direccion,
+        numero: cliente.numero,
       })
     } else {
       setForm({
@@ -39,6 +41,7 @@ export function ClienteModal({ isOpen, onClose, onSave, cliente }: ClienteModalP
         mail: '',
         telefono: '',
         direccion: '',
+        numero: '',
       })
     }
     setErrors({})
@@ -85,8 +88,14 @@ export function ClienteModal({ isOpen, onClose, onSave, cliente }: ClienteModalP
 
     if (!form.direccion.trim()) {
       newErrors.direccion = 'La dirección es requerida'
-    } else if (form.direccion.trim().length < 5) {
-      newErrors.direccion = 'La dirección debe tener al menos 5 caracteres'
+    } else if (form.direccion.trim().length < 2) {
+      newErrors.direccion = 'La dirección debe tener al menos 2 caracteres'
+    }
+
+    if (!form.numero.trim()) {
+      newErrors.numero = 'El número es requerido'
+    } else if (!/^\d+[a-zA-Z]?$/.test(form.numero.trim())) {
+      newErrors.numero = 'Ingrese un número válido (ej: 1234, 1234A)'
     }
 
     setErrors(newErrors)
@@ -160,13 +169,24 @@ export function ClienteModal({ isOpen, onClose, onSave, cliente }: ClienteModalP
           error={errors.telefono}
         />
 
-        <Input
-          label="Dirección"
-          placeholder="Av. Ejemplo 1234"
-          value={form.direccion}
-          onChange={(e) => setForm((prev) => ({ ...prev, direccion: e.target.value }))}
-          error={errors.direccion}
-        />
+        <div className="grid grid-cols-3 gap-4">
+          <div className="col-span-2">
+            <Input
+              label="Dirección"
+              placeholder="Av. Ejemplo"
+              value={form.direccion}
+              onChange={(e) => setForm((prev) => ({ ...prev, direccion: e.target.value }))}
+              error={errors.direccion}
+            />
+          </div>
+          <Input
+            label="Número"
+            placeholder="1234"
+            value={form.numero}
+            onChange={(e) => setForm((prev) => ({ ...prev, numero: e.target.value }))}
+            error={errors.numero}
+          />
+        </div>
 
         <div className="flex justify-end gap-3 pt-4">
           <Button type="button" variant="secondary" onClick={onClose}>
